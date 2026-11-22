@@ -1,9 +1,15 @@
+{{--
+    Painel (GET /painel). Os dados vêm do DashboardController: $filter, $income,
+    $expense, $balance, $byCategory, $history e $latest.
+--}}
 @php
     use App\Support\Money;
+    // strtok pega o texto até o primeiro espaço: "Bruna Lima" vira "Bruna".
     $primeiroNome = strtok(auth()->user()->name, ' ');
 @endphp
 
 <x-layouts.app title="Painel">
+    {{-- Os dois pontos em :eyebrow e :title fazem o valor ser lido como PHP, e não como texto. --}}
     <x-page-header :eyebrow="now()->locale('pt_BR')->translatedFormat('l, j \d\e F')" :title="'Olá, '.$primeiroNome.'.'">
         <x-slot:actions>
             <a href="{{ route('transactions.create', ['tipo' => 'entrada']) }}" class="btn-ghost border border-rule">+ Entrada</a>
@@ -15,6 +21,7 @@
         <x-month-nav :filter="$filter" route="dashboard" />
     </div>
 
+    {{-- Cards de Entradas, Saídas e Saldo do mês. --}}
     <section class="mt-6 grid gap-px overflow-hidden rounded-[3px] border border-rule bg-rule sm:grid-cols-3">
         <div class="bg-card p-6">
             <p class="text-[13px] text-muted">Entradas</p>
@@ -32,6 +39,7 @@
         </div>
     </section>
 
+    {{-- Conta sem nenhum lançamento nos 6 meses: mostra a mensagem de boas-vindas em vez dos gráficos. --}}
     @if ($latest->isEmpty() && $history->every(fn ($m) => $m['income'] == 0 && $m['expense'] == 0))
         <section class="ruled mt-10 rounded-[3px] border border-rule bg-card px-6 py-14 text-center">
             <div class="mx-auto max-w-md bg-card px-6 py-5">

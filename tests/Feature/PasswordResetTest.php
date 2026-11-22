@@ -1,5 +1,10 @@
 <?php
 
+/*
+ * Testes do "esqueci minha senha". Notification::fake() impede o envio de
+ * e-mail de verdade e permite conferir se a notificação seria enviada.
+ */
+
 use App\Models\User;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Hash;

@@ -1,3 +1,7 @@
+{{--
+    Logo da Caderneta com link para o painel. <x-logo dark /> usa as cores
+    para fundo escuro (lado esquerdo da tela de login).
+--}}
 @props(['dark' => false])
 
 <a href="{{ route('dashboard') }}" {{ $attributes->merge(['class' => 'inline-flex items-baseline gap-2']) }}>

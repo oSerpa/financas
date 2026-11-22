@@ -1,7 +1,12 @@
+{{--
+    Gráfico de barras dos últimos 6 meses. $history vem do
+    DashboardController::lastSixMonths() e $current é o mês filtrado ('2026-11').
+--}}
 @props(['history', 'current'])
 
 @php
     use App\Support\Money;
+    // Maior valor entre entradas e saídas: vira a altura de 100%. O 1 evita divisão por zero.
     $max = max(1, $history->max('income'), $history->max('expense'));
     $hasData = $history->contains(fn ($m) => $m['income'] > 0 || $m['expense'] > 0);
 @endphp
@@ -19,6 +24,7 @@
     @if (! $hasData)
         <p class="mt-6 text-[14px] text-muted">Ainda não há lançamentos nesse período.</p>
     @else
+        {{-- data-chart e data-tip são lidos pelo resources/js/app.js para montar o tooltip. --}}
         <div class="relative mt-6" data-chart>
             <div class="grid h-48 grid-cols-6 items-end gap-3 border-b border-ink/70">
                 @foreach ($history as $m)
@@ -33,6 +39,7 @@
             </div>
             <div class="mt-2 grid grid-cols-6 gap-3">
                 @foreach ($history as $m)
+                    {{-- @class aplica cada classe só se a condição for verdadeira: o mês atual fica em destaque. --}}
                     <span @class([
                         'num text-center text-[12px] uppercase',
                         'font-medium text-ink' => $m['key'] === $current,
@@ -44,6 +51,7 @@
             <div class="pointer-events-none absolute z-10 hidden min-w-44 rounded-[3px] border border-ink bg-card px-3 py-2 text-[13px] shadow-[3px_3px_0_0_var(--color-ink)]" data-tooltip></div>
         </div>
 
+        {{-- Versão em tabela dos mesmos dados, para leitores de tela e para quem prefere números. --}}
         <details class="mt-5 text-[13px]">
             <summary class="cursor-pointer text-ink-soft hover:text-ink">Ver como tabela</summary>
             <table class="num mt-3 w-full text-left">

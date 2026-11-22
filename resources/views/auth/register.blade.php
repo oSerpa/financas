@@ -1,3 +1,7 @@
+{{--
+    Tela de cadastro (GET /cadastro), enviada para RegisterController@store.
+    O campo password_confirmation é exigido pela regra 'confirmed' da senha.
+--}}
 <x-layouts.guest title="Criar conta">
     <h1 class="font-display text-[34px] leading-tight">Abra sua caderneta.</h1>
     <p class="mt-2 text-[15px] text-muted">Leva menos de um minuto.</p>

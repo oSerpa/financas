@@ -1,5 +1,10 @@
+{{--
+    Lista de lançamentos (GET /lancamentos). Recebe do TransactionController@index:
+    $transactions (paginado), $filter (MonthFilter), $income, $expense e $categories.
+--}}
 @php
     use App\Support\Money;
+    // Filtros atuais da URL, repassados para a navegação de mês e para a exportação.
     $params = request()->only(['tipo', 'categoria', 'busca']);
     $hasFilters = collect($params)->filter(fn ($v) => $v !== null && $v !== '')->isNotEmpty();
 @endphp
@@ -16,12 +21,15 @@
     <div class="mt-6 flex flex-wrap items-center justify-between gap-4">
         <x-month-nav :filter="$filter" route="transactions.index" :params="$params" />
 
+        {{-- Formulário GET: os campos viram ?busca=...&tipo=... na URL, então o filtro
+             pode ser salvo nos favoritos ou compartilhado. O campo escondido mantém o mês. --}}
         <form method="GET" action="{{ route('transactions.index') }}" class="flex flex-wrap items-center gap-2">
             <input type="hidden" name="mes" value="{{ $filter->key() }}">
             <label class="sr-only" for="busca">Buscar</label>
             <input id="busca" type="search" name="busca" value="{{ request('busca') }}" placeholder="Buscar descrição"
                    class="field-input w-44 py-1.5 text-[14px]">
             <label class="sr-only" for="tipo">Tipo</label>
+            {{-- onchange envia o formulário ao trocar a opção, sem precisar clicar em Filtrar. --}}
             <select id="tipo" name="tipo" class="field-input w-auto py-1.5 text-[14px]" onchange="this.form.submit()">
                 <option value="">Entradas e saídas</option>
                 @foreach (\App\Enums\TransactionType::cases() as $case)
@@ -44,6 +52,7 @@
 
     <div class="mt-5 flex flex-wrap items-center justify-between gap-4 border-y border-rule py-3 text-[14px]">
         <div class="num flex flex-wrap gap-x-6 gap-y-1">
+            {{-- total() é o total de registros do filtro, não só os desta página. --}}
             <span class="text-muted">{{ $transactions->total() }} {{ $transactions->total() === 1 ? 'registro' : 'registros' }}</span>
             <span class="text-income">+ {{ Money::format($income, false) }}</span>
             <span class="text-expense">− {{ Money::format($expense, false) }}</span>
@@ -106,6 +115,7 @@
             </ul>
         </div>
 
+        {{-- Links de página, usando o componente components/pagination.blade.php. --}}
         <div class="mt-6">{{ $transactions->links() }}</div>
     @endif
 </x-layouts.app>

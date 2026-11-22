@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * Testes dos totais do painel, dos filtros da lista e da exportação CSV.
+ *
+ * travelTo() congela a data de "hoje" em 20/11/2026, para os testes não
+ * dependerem do dia em que rodam. Os lançamentos do beforeEach têm valores
+ * escolhidos para as contas darem números redondos.
+ */
+
 use App\Models\Category;
 use App\Models\Transaction;
 use App\Models\User;

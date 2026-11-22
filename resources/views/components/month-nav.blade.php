@@ -1,6 +1,13 @@
 @props(['filter', 'route', 'params' => []])
 
-{{-- Navegação entre meses. Mantém os outros filtros da URL. --}}
+{{--
+    Navegação entre meses. Mantém os outros filtros da URL.
+
+    Props: $filter (MonthFilter), $route (nome da rota, ex.: 'dashboard')
+    e $params (filtros atuais da URL, que não podem se perder ao trocar de mês).
+    array_merge junta os filtros com o novo ?mes=. O link "Hoje" usa
+    array_diff_key para tirar o ?mes= e cair no mês atual.
+--}}
 <div class="flex items-center gap-1">
     <a href="{{ route($route, array_merge($params, ['mes' => $filter->previous()])) }}"
        class="btn-ghost px-2.5" aria-label="Mês anterior">←</a>

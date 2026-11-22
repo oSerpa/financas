@@ -1,3 +1,10 @@
+{{--
+    Cabeçalho das páginas: <x-page-header eyebrow="Organização" title="Categorias">.
+
+    $eyebrow é o texto pequeno acima do título (opcional, padrão null).
+    $actions é um "slot nomeado": o que estiver dentro de <x-slot:actions>
+    na página aparece aqui, à direita (normalmente os botões).
+--}}
 @props(['eyebrow' => null, 'title'])
 
 <div class="flex flex-wrap items-end justify-between gap-4 border-b border-ink pb-6">

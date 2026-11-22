@@ -1,6 +1,13 @@
+{{--
+    Formulário de categoria, o mesmo para criar e editar.
+    $category->exists é false para uma Category nova (create) e true para
+    uma que veio do banco (edit). Isso decide título, rota e método.
+--}}
 @php
     use App\Enums\TransactionType;
     $editing = $category->exists;
+    // old() tem prioridade (valor reenviado após erro). Senão usa o da categoria.
+    // ?->value lida com o tipo vir como enum (do banco) ou como texto (do ?tipo=).
     $selectedType = old('type', $category->type?->value ?? $category->type);
 @endphp
 
@@ -11,6 +18,7 @@
           action="{{ $editing ? route('categories.update', $category) : route('categories.store') }}"
           class="mt-4 max-w-lg rounded-[3px] border border-rule bg-card p-6 sm:p-8">
         @csrf
+        {{-- Na edição o formulário vira PUT para casar com a rota categories.update. --}}
         @if ($editing) @method('PUT') @endif
 
         <h1 class="font-display text-[32px] leading-tight">{{ $editing ? 'Editar categoria' : 'Nova categoria' }}</h1>
@@ -18,6 +26,8 @@
         <fieldset class="mt-7">
             <legend class="field-label">Tipo</legend>
             <div class="inline-grid grid-cols-2 rounded-[3px] border border-rule p-1">
+                {{-- Um radio por caso do enum. O radio fica escondido (sr-only) e o span estilizado
+                     muda de cor com peer-checked do Tailwind quando ele está marcado. --}}
                 @foreach (TransactionType::cases() as $case)
                     <label class="cursor-pointer">
                         <input type="radio" name="type" value="{{ $case->value }}" class="peer sr-only" @checked($selectedType === $case->value)>

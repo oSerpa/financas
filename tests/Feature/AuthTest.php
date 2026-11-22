@@ -1,5 +1,11 @@
 <?php
 
+/*
+ * Testes de login, cadastro e logout.
+ * Cada test() é um cenário. $this->post() simula o envio de um formulário e
+ * os assert* conferem a resposta (redirect, erros na sessão, usuário logado).
+ */
+
 use App\Models\User;
 
 test('visitante é redirecionado para o login', function () {

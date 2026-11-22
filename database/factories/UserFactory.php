@@ -8,17 +8,21 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 /**
+ * Fabrica usuários falsos. Arquivo que veio com o Laravel.
+ * Ex.: User::factory()->create() nos testes.
+ *
  * @extends Factory<User>
  */
 class UserFactory extends Factory
 {
     /**
-     * The current password being used by the factory.
+     * Guarda o hash da senha para não recalcular o bcrypt (que é lento)
+     * a cada usuário fabricado.
      */
     protected static ?string $password;
 
     /**
-     * Define the model's default state.
+     * Valores padrão. Todo usuário fabricado tem a senha "password".
      *
      * @return array<string, mixed>
      */
@@ -34,7 +38,7 @@ class UserFactory extends Factory
     }
 
     /**
-     * Indicate that the model's email address should be unverified.
+     * Estado de usuário com e-mail não verificado.
      */
     public function unverified(): static
     {

@@ -11,6 +11,7 @@ use Illuminate\Database\Seeder;
  */
 class DemoSeeder extends Seeder
 {
+    /** Rodar só este seeder: php artisan db:seed --class=DemoSeeder */
     public function run(): void
     {
         // Recria a conta do zero. Apaga os lançamentos antes, porque a categoria não pode
@@ -26,6 +27,9 @@ class DemoSeeder extends Seeder
             'password' => 'caderneta',
         ]);
         $user->createDefaultCategories();
+
+        // pluck('id', 'name') gera ['Mercado' => 4, 'Salário' => 1, ...],
+        // para achar o id da categoria pelo nome.
 
         $categories = $user->categories()->pluck('id', 'name');
 
@@ -46,6 +50,8 @@ class DemoSeeder extends Seeder
             ['Streaming', 'Lazer', 55.9, 55.9, 1],
         ];
 
+        // Lançamentos que aparecem em alguns meses e em outros não.
+        // [descrição, categoria, valor mínimo, valor máximo]
         $occasional = [
             ['Projeto freelance', 'Freelance', 600, 1800],
             ['Venda de usado', 'Outras entradas', 80, 400],
@@ -56,10 +62,13 @@ class DemoSeeder extends Seeder
 
         mt_srand(2026); // mesma semente: os dados saem iguais a cada execução
 
+        // De 5 meses atrás até o mês atual.
         foreach (range(5, 0) as $monthsAgo) {
             $month = now()->startOfMonth()->subMonths($monthsAgo);
+            // No mês atual, só até hoje, para não criar lançamento no futuro.
             $lastDay = $monthsAgo === 0 ? now()->day : $month->daysInMonth;
 
+            // A desestruturação [$a, $b] = $array pega cada posição numa variável.
             foreach ($monthly as [$description, $category, $min, $max, $day]) {
                 if ($day > $lastDay) {
                     continue;
@@ -69,15 +78,17 @@ class DemoSeeder extends Seeder
             }
 
             foreach ($occasional as [$description, $category, $min, $max]) {
-                if (mt_rand(0, 1)) {
+                if (mt_rand(0, 1)) { // 50% de chance
                     $this->add($user, $categories[$category], $description, $min, $max, $month->copy()->day(mt_rand(1, $lastDay)));
                 }
             }
         }
     }
 
+    /** Cria um lançamento com valor sorteado entre o mínimo e o máximo. */
     private function add(User $user, int $categoryId, string $description, float $min, float $max, $date): void
     {
+        // Sorteia em centavos (inteiros) e divide por 100 para ter 2 casas.
         $amount = $min === $max ? $min : mt_rand((int) ($min * 100), (int) ($max * 100)) / 100;
 
         $user->transactions()->create([
