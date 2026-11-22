@@ -27,6 +27,7 @@ class RegisterController extends Controller
 
         // A senha é convertida em hash pelo cast 'hashed' do model User.
         $user = User::create($data);
+        $user->createDefaultCategories();
 
         Auth::login($user);
         $request->session()->regenerate();

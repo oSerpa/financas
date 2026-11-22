@@ -14,8 +14,10 @@
                 <nav class="hidden gap-1 sm:flex">
                     <a href="{{ route('dashboard') }}"
                        @class(['btn-ghost', 'bg-paper-dark text-ink' => request()->routeIs('dashboard')])>Painel</a>
-                    <span class="btn-ghost cursor-default opacity-40" title="Na próxima etapa">Lançamentos</span>
-                    <span class="btn-ghost cursor-default opacity-40" title="Na próxima etapa">Categorias</span>
+                    <a href="{{ route('transactions.index') }}"
+                       @class(['btn-ghost', 'bg-paper-dark text-ink' => request()->routeIs('transactions.*')])>Lançamentos</a>
+                    <a href="{{ route('categories.index') }}"
+                       @class(['btn-ghost', 'bg-paper-dark text-ink' => request()->routeIs('categories.*')])>Categorias</a>
                 </nav>
             </div>
 
@@ -29,7 +31,15 @@
         </div>
     </header>
 
+    {{-- Navegação no celular --}}
+    <nav class="flex gap-1 overflow-x-auto border-b border-rule px-3 py-2 sm:hidden">
+        <a href="{{ route('dashboard') }}" @class(['btn-ghost', 'bg-paper-dark text-ink' => request()->routeIs('dashboard')])>Painel</a>
+        <a href="{{ route('transactions.index') }}" @class(['btn-ghost', 'bg-paper-dark text-ink' => request()->routeIs('transactions.*')])>Lançamentos</a>
+        <a href="{{ route('categories.index') }}" @class(['btn-ghost', 'bg-paper-dark text-ink' => request()->routeIs('categories.*')])>Categorias</a>
+    </nav>
+
     <main class="mx-auto max-w-6xl px-5 py-10 sm:px-8">
+        <x-flash />
         {{ $slot }}
     </main>
 </body>

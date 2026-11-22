@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/painel');
@@ -15,6 +18,17 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::view('/painel', 'dashboard')->name('dashboard');
+    Route::get('/painel', DashboardController::class)->name('dashboard');
     Route::post('/sair', [LoginController::class, 'destroy'])->name('logout');
+
+    // URLs em português, nomes de rota em inglês para manter o código consistente.
+    Route::resource('lancamentos', TransactionController::class)
+        ->except('show')
+        ->parameters(['lancamentos' => 'transaction'])
+        ->names('transactions');
+
+    Route::resource('categorias', CategoryController::class)
+        ->except('show')
+        ->parameters(['categorias' => 'category'])
+        ->names('categories');
 });
