@@ -2,7 +2,11 @@
     <h1 class="font-display text-[34px] leading-tight">Bom te ver de novo.</h1>
     <p class="mt-2 text-[15px] text-muted">Entre para continuar suas anotações.</p>
 
-    <form method="POST" action="{{ route('login') }}" class="mt-9 space-y-5">
+    <div class="mt-9">
+        <x-flash />
+    </div>
+
+    <form method="POST" action="{{ route('login') }}" class="space-y-5">
         @csrf
 
         <div>
@@ -13,7 +17,10 @@
         </div>
 
         <div>
-            <label for="password" class="field-label">Senha</label>
+            <div class="flex items-baseline justify-between">
+                <label for="password" class="field-label">Senha</label>
+                <a href="{{ route('password.request') }}" class="text-[13px] text-muted underline decoration-rule underline-offset-4 hover:text-ink">Esqueci minha senha</a>
+            </div>
             <input id="password" name="password" type="password"
                    class="field-input" autocomplete="current-password" required>
             @error('password') <p class="field-error">{{ $message }}</p> @enderror
