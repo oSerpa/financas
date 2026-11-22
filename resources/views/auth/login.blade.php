@@ -27,8 +27,10 @@
         <button type="submit" class="btn-primary w-full">Entrar</button>
     </form>
 
-    <p class="mt-8 border-t border-rule pt-6 text-[14px] text-muted">
-        Ainda não tem conta?
-        <a href="{{ route('register') }}" class="font-medium text-ink underline decoration-highlight decoration-2 underline-offset-4">Criar uma agora</a>
-    </p>
+    @if (config('app.registration_enabled'))
+        <p class="mt-8 border-t border-rule pt-6 text-[14px] text-muted">
+            Ainda não tem conta?
+            <a href="{{ route('register') }}" class="font-medium text-ink underline decoration-highlight decoration-2 underline-offset-4">Criar uma agora</a>
+        </p>
+    @endif
 </x-layouts.guest>
