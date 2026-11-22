@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ $title ?? 'Painel' }} · {{ config('app.name') }}</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body class="min-h-screen">
+    <header class="border-b border-rule bg-paper">
+        <div class="mx-auto flex max-w-6xl items-center justify-between gap-6 px-5 py-4 sm:px-8">
+            <div class="flex items-center gap-10">
+                <x-logo />
+                <nav class="hidden gap-1 sm:flex">
+                    <a href="{{ route('dashboard') }}"
+                       @class(['btn-ghost', 'bg-paper-dark text-ink' => request()->routeIs('dashboard')])>Painel</a>
+                    <span class="btn-ghost cursor-default opacity-40" title="Na próxima etapa">Lançamentos</span>
+                    <span class="btn-ghost cursor-default opacity-40" title="Na próxima etapa">Categorias</span>
+                </nav>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <span class="hidden text-[14px] text-ink-soft md:inline">{{ auth()->user()->name }}</span>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="btn-ghost">Sair</button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <main class="mx-auto max-w-6xl px-5 py-10 sm:px-8">
+        {{ $slot }}
+    </main>
+</body>
+</html>

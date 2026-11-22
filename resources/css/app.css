@@ -1,0 +1,88 @@
+@import 'tailwindcss';
+
+/* Fontes servidas pelo próprio projeto (sem depender de CDN). */
+@import '@fontsource/ibm-plex-sans/400.css';
+@import '@fontsource/ibm-plex-sans/500.css';
+@import '@fontsource/ibm-plex-sans/600.css';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+@import '@fontsource/fraunces/400.css';
+@import '@fontsource/fraunces/400-italic.css';
+@import '@fontsource/fraunces/600.css';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+/*
+ * Identidade visual: papel de caderno contábil.
+ * Fundo creme, tinta escura, régua fina e duas cores de lançamento
+ * (verde para entrada, terracota para saída).
+ */
+@theme {
+    --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --font-display: 'Fraunces', ui-serif, Georgia, serif;
+
+    --color-paper: #f4f1e8;
+    --color-paper-dark: #ebe6d9;
+    --color-card: #fbfaf5;
+    --color-ink: #1d1c19;
+    --color-ink-soft: #4a4740;
+    --color-muted: #7a756a;
+    --color-rule: #d9d2c2;
+    --color-income: #2f5d3a;
+    --color-income-soft: #dfe8dc;
+    --color-expense: #a2452e;
+    --color-expense-soft: #f2dfd6;
+    --color-highlight: #e9c46a;
+}
+
+@layer base {
+    body {
+        @apply bg-paper text-ink font-sans antialiased;
+    }
+
+    .num {
+        font-family: var(--font-mono);
+        font-variant-numeric: tabular-nums;
+    }
+}
+
+@layer components {
+    .field-label {
+        @apply mb-1.5 block text-[13px] font-medium text-ink-soft;
+    }
+
+    .field-input {
+        @apply w-full rounded-[3px] border border-rule bg-card px-3 py-2.5 text-[15px] text-ink
+               placeholder:text-muted/70 outline-none transition
+               focus:border-ink focus:ring-0 focus:shadow-[3px_3px_0_0_var(--color-ink)];
+    }
+
+    .field-error {
+        @apply mt-1.5 text-[13px] text-expense;
+    }
+
+    .btn-primary {
+        @apply inline-flex items-center justify-center gap-2 rounded-[3px] bg-ink px-4 py-2.5
+               text-[14px] font-medium text-paper transition
+               hover:-translate-x-px hover:-translate-y-px hover:shadow-[3px_3px_0_0_var(--color-highlight)]
+               active:translate-x-0 active:translate-y-0 active:shadow-none;
+    }
+
+    .btn-ghost {
+        @apply inline-flex items-center gap-2 rounded-[3px] px-3 py-2 text-[14px] text-ink-soft
+               transition hover:bg-paper-dark hover:text-ink;
+    }
+
+    /* Linhas horizontais de caderno ao fundo de um bloco. */
+    .ruled {
+        background-image: repeating-linear-gradient(
+            to bottom,
+            transparent 0,
+            transparent 31px,
+            var(--color-rule) 31px,
+            var(--color-rule) 32px
+        );
+    }
+}
