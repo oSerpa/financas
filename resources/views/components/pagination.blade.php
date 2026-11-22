@@ -1,3 +1,10 @@
+{{--
+    Paginação própria, ativada no AppServiceProvider com
+    Paginator::defaultView('components.pagination'). É o HTML que aparece
+    quando a view chama {{ $transactions->links() }}.
+
+    $paginator é o objeto que o ->paginate(20) do controller devolveu.
+--}}
 @if ($paginator->hasPages())
     <nav class="flex items-center justify-between text-[14px]" aria-label="Paginação">
         @if ($paginator->onFirstPage())

@@ -1,3 +1,8 @@
+{{--
+    Esqueci minha senha (GET /esqueci-senha). Envia o e-mail para
+    ForgotPasswordController@store, que manda o link. A mensagem de
+    "link enviado" aparece pelo <x-flash />.
+--}}
 <x-layouts.guest title="Esqueci minha senha">
     <h1 class="font-display text-[34px] leading-tight">Esqueceu a senha?</h1>
     <p class="mt-2 text-[15px] text-muted">Informe o e-mail da sua conta e enviaremos um link para criar uma nova.</p>

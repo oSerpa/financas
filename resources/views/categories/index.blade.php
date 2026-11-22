@@ -1,3 +1,7 @@
+{{--
+    Lista de categorias (GET /categorias). $groups vem do CategoryController@index
+    com duas entradas, Entradas e Saídas, cada uma com 'type' e 'items'.
+--}}
 <x-layouts.app title="Categorias">
     <x-page-header eyebrow="Organização" title="Categorias">
         <x-slot:actions>
@@ -18,9 +22,11 @@
                 </div>
 
                 <ul class="divide-y divide-rule rounded-[3px] border border-rule bg-card">
+                    {{-- @forelse é um foreach com bloco @empty para quando a lista está vazia. --}}
                     @forelse ($group['items'] as $category)
                         <li class="flex items-center gap-4 px-5 py-3">
                             <span class="flex-1 text-[15px]">{{ $category->name }}</span>
+                            {{-- transactions_count vem do withCount() no controller. --}}
                             <span class="num text-[12px] text-muted">
                                 {{ $category->transactions_count }} {{ $category->transactions_count === 1 ? 'lançamento' : 'lançamentos' }}
                             </span>

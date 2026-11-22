@@ -1,5 +1,10 @@
 <?php
 
+/*
+ * Teste unitário: testa só a classe Money, sem banco e sem requisição HTTP.
+ * expect(...)->toBe(...) é a forma do Pest de comparar resultados.
+ */
+
 use App\Support\Money;
 
 test('formata valores em reais', function (float $value, string $expected) {

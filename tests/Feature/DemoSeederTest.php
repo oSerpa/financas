@@ -1,5 +1,10 @@
 <?php
 
+/*
+ * Garante que o DemoSeeder cria a conta de demonstração e pode rodar de
+ * novo sem duplicar nada.
+ */
+
 use App\Models\User;
 use Database\Seeders\DemoSeeder;
 

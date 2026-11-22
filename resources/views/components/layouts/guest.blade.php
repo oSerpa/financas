@@ -1,3 +1,8 @@
+{{--
+    Layout das telas de visitante (login, cadastro, esqueci a senha).
+    Usado como <x-layouts.guest title="Entrar"> ... </x-layouts.guest>.
+    Em telas grandes divide a página em duas colunas; no celular só o formulário aparece.
+--}}
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>

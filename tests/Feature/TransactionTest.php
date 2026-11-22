@@ -1,5 +1,10 @@
 <?php
 
+/*
+ * Testes do CRUD de lançamentos: criar com valor no formato brasileiro,
+ * editar, apagar e impedir acesso aos lançamentos de outro usuário (403).
+ */
+
 use App\Models\Category;
 use App\Models\Transaction;
 use App\Models\User;

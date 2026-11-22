@@ -1,3 +1,8 @@
+{{--
+    Nova senha (GET /redefinir-senha/{token}), aberta pelo link do e-mail.
+    O token vai num campo escondido e o e-mail já vem preenchido pela URL.
+    Envia para ResetPasswordController@store.
+--}}
 <x-layouts.guest title="Nova senha">
     <h1 class="font-display text-[34px] leading-tight">Crie uma nova senha.</h1>
     <p class="mt-2 text-[15px] text-muted">Depois disso você já pode entrar com ela.</p>

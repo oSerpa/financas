@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * Testes do CRUD de categorias, incluindo a regra de nome único e o
+ * bloqueio de acesso às categorias de outro usuário.
+ *
+ * beforeEach roda antes de cada teste e cria um usuário novo em $this->user.
+ * Category::factory()->for($user) cria a categoria já ligada a esse usuário.
+ */
+
 use App\Models\Category;
 use App\Models\Transaction;
 use App\Models\User;

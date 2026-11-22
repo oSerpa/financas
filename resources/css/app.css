@@ -1,3 +1,7 @@
+/*
+ * CSS da Caderneta com Tailwind 4. Compilado pelo Vite (npm run dev / npm run build).
+ * No Tailwind 4 a configuração fica aqui no CSS (@theme), sem tailwind.config.js.
+ */
 @import 'tailwindcss';
 
 /* Fontes servidas pelo próprio projeto (sem depender de CDN). */
@@ -10,6 +14,8 @@
 @import '@fontsource/fraunces/400-italic.css';
 @import '@fontsource/fraunces/600.css';
 
+/* @source diz ao Tailwind onde procurar classes usadas, além de resources/.
+   Só as classes encontradas entram no CSS final. */
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
@@ -18,6 +24,8 @@
  * Fundo creme, tinta escura, régua fina e duas cores de lançamento
  * (verde para entrada, terracota para saída).
  */
+/* Cada variável --color-X vira classes como bg-X, text-X e border-X.
+   Ex.: --color-income gera text-income e bg-income. */
 @theme {
     --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
     --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
@@ -42,17 +50,22 @@
     --color-chart-expense: #9c3b25;
 }
 
+/* Estilos aplicados direto nas tags. @apply usa classes do Tailwind dentro do CSS. */
 @layer base {
     body {
         @apply bg-paper text-ink font-sans antialiased;
     }
 
+    /* Números em fonte monoespaçada com algarismos de mesma largura,
+       para as colunas de valores ficarem alinhadas. */
     .num {
         font-family: var(--font-mono);
         font-variant-numeric: tabular-nums;
     }
 }
 
+/* Classes reutilizáveis dos formulários e botões, para não repetir a lista
+   de utilitários em cada view. */
 @layer components {
     .field-label {
         @apply mb-1.5 block text-[13px] font-medium text-ink-soft;
