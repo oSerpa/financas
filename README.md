@@ -10,7 +10,7 @@ Projeto de portfólio, construído em etapas: autenticação, CRUD completo com 
 
 ## Funcionalidades
 
-- Cadastro e login com limite de tentativas contra força bruta.
+- Cadastro e login com limite de tentativas contra força bruta, e recuperação de senha por e-mail.
 - CRUD de **categorias** (entrada ou saída) e de **lançamentos**, cada usuário enxergando só os próprios dados.
 - **Painel do mês** com entradas, saídas, saldo, gastos por categoria e comparação dos últimos 6 meses.
 - **Filtros** por mês, tipo, categoria e busca por texto, com totais do filtro.
