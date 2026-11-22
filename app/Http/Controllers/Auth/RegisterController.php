@@ -14,11 +14,15 @@ class RegisterController extends Controller
 {
     public function create(): View
     {
+        $this->ensureRegistrationIsOpen();
+
         return view('auth.register');
     }
 
     public function store(Request $request): RedirectResponse
     {
+        $this->ensureRegistrationIsOpen();
+
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users'],
@@ -33,5 +37,11 @@ class RegisterController extends Controller
         $request->session()->regenerate();
 
         return redirect()->route('dashboard');
+    }
+
+    /** Com REGISTRATION_ENABLED=false a tela e o envio do cadastro respondem 404. */
+    private function ensureRegistrationIsOpen(): void
+    {
+        abort_unless(config('app.registration_enabled'), 404);
     }
 }

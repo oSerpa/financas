@@ -61,3 +61,18 @@ test('usuário consegue sair', function () {
 
     $this->assertGuest();
 });
+
+test('com o cadastro fechado a tela e o envio dão 404 e o link some', function () {
+    config(['app.registration_enabled' => false]);
+
+    $this->get('/cadastro')->assertNotFound();
+    $this->post('/cadastro', [
+        'name' => 'Intrusa',
+        'email' => 'intrusa@example.com',
+        'password' => 'senha-segura',
+        'password_confirmation' => 'senha-segura',
+    ])->assertNotFound();
+
+    $this->assertDatabaseMissing('users', ['email' => 'intrusa@example.com']);
+    $this->get('/entrar')->assertOk()->assertDontSee('Criar uma agora');
+});
