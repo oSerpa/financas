@@ -1,96 +1,65 @@
 <?php
 
-namespace Tests\Feature;
-
 use App\Models\Category;
 use App\Models\Transaction;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
-class CategoryTest extends TestCase
-{
-    use RefreshDatabase;
+beforeEach(function () {
+    $this->user = User::factory()->create();
+});
 
-    public function test_cadastro_cria_categorias_padrao(): void
-    {
-        $this->post('/cadastro', [
-            'name' => 'Maria', 'email' => 'maria@example.com',
-            'password' => 'senha-segura', 'password_confirmation' => 'senha-segura',
-        ]);
+test('lista apenas categorias do usuário', function () {
+    Category::factory()->for($this->user)->create(['name' => 'Minha']);
+    Category::factory()->create(['name' => 'DeOutro']);
 
-        $user = User::firstWhere('email', 'maria@example.com');
-        $this->assertSame(9, $user->categories()->count());
-    }
+    $this->actingAs($this->user)->get('/categorias')
+        ->assertOk()->assertSee('Minha')->assertDontSee('DeOutro');
+});
 
-    public function test_lista_apenas_categorias_do_usuario(): void
-    {
-        $user = User::factory()->create();
-        Category::factory()->for($user)->create(['name' => 'Minha']);
-        Category::factory()->create(['name' => 'DeOutro']);
+test('cria e edita categoria', function () {
+    $this->actingAs($this->user)->post('/categorias', ['name' => 'Academia', 'type' => 'saida'])
+        ->assertRedirect('/categorias');
 
-        $this->actingAs($user)->get('/categorias')
-            ->assertOk()->assertSee('Minha')->assertDontSee('DeOutro');
-    }
+    $category = $this->user->categories()->firstWhere('name', 'Academia');
+    expect($category)->not->toBeNull();
 
-    public function test_cria_e_edita_categoria(): void
-    {
-        $user = User::factory()->create();
+    $this->actingAs($this->user)->put("/categorias/{$category->id}", ['name' => 'Esporte', 'type' => 'saida'])
+        ->assertRedirect('/categorias');
 
-        $this->actingAs($user)->post('/categorias', ['name' => 'Academia', 'type' => 'saida'])
-            ->assertRedirect('/categorias');
+    expect($category->fresh()->name)->toBe('Esporte');
+});
 
-        $category = $user->categories()->firstWhere('name', 'Academia');
-        $this->assertNotNull($category);
+test('nome repetido no mesmo tipo é recusado, em outro tipo pode', function () {
+    Category::factory()->for($this->user)->create(['name' => 'Mercado', 'type' => 'saida']);
 
-        $this->actingAs($user)->put("/categorias/{$category->id}", ['name' => 'Esporte', 'type' => 'saida'])
-            ->assertRedirect('/categorias');
+    $this->actingAs($this->user)->post('/categorias', ['name' => 'Mercado', 'type' => 'saida'])
+        ->assertSessionHasErrors('name');
 
-        $this->assertSame('Esporte', $category->fresh()->name);
-    }
+    $this->actingAs($this->user)->post('/categorias', ['name' => 'Mercado', 'type' => 'entrada'])
+        ->assertSessionHasNoErrors();
+});
 
-    public function test_nome_repetido_no_mesmo_tipo_e_recusado(): void
-    {
-        $user = User::factory()->create();
-        Category::factory()->for($user)->create(['name' => 'Mercado', 'type' => 'saida']);
+test('não mexe em categoria de outro usuário', function () {
+    $alheia = Category::factory()->create();
 
-        $this->actingAs($user)->post('/categorias', ['name' => 'Mercado', 'type' => 'saida'])
-            ->assertSessionHasErrors('name');
+    $this->actingAs($this->user)->get("/categorias/{$alheia->id}/editar")->assertForbidden();
+    $this->actingAs($this->user)->put("/categorias/{$alheia->id}", ['name' => 'X', 'type' => 'saida'])->assertForbidden();
+    $this->actingAs($this->user)->delete("/categorias/{$alheia->id}")->assertForbidden();
+});
 
-        // Em outro tipo, pode.
-        $this->actingAs($user)->post('/categorias', ['name' => 'Mercado', 'type' => 'entrada'])
-            ->assertSessionHasNoErrors();
-    }
+test('não apaga categoria com lançamentos', function () {
+    $category = Category::factory()->for($this->user)->create();
+    Transaction::factory()->for($category)->create();
 
-    public function test_nao_mexe_em_categoria_de_outro_usuario(): void
-    {
-        $user = User::factory()->create();
-        $alheia = Category::factory()->create();
+    $this->actingAs($this->user)->delete("/categorias/{$category->id}")->assertSessionHas('error');
 
-        $this->actingAs($user)->get("/categorias/{$alheia->id}/editar")->assertForbidden();
-        $this->actingAs($user)->put("/categorias/{$alheia->id}", ['name' => 'X', 'type' => 'saida'])->assertForbidden();
-        $this->actingAs($user)->delete("/categorias/{$alheia->id}")->assertForbidden();
-    }
+    $this->assertModelExists($category);
+});
 
-    public function test_nao_apaga_categoria_com_lancamentos(): void
-    {
-        $user = User::factory()->create();
-        $category = Category::factory()->for($user)->create();
-        Transaction::factory()->for($category)->create();
+test('apaga categoria vazia', function () {
+    $category = Category::factory()->for($this->user)->create();
 
-        $this->actingAs($user)->delete("/categorias/{$category->id}")
-            ->assertSessionHas('error');
+    $this->actingAs($this->user)->delete("/categorias/{$category->id}")->assertRedirect('/categorias');
 
-        $this->assertModelExists($category);
-    }
-
-    public function test_apaga_categoria_vazia(): void
-    {
-        $user = User::factory()->create();
-        $category = Category::factory()->for($user)->create();
-
-        $this->actingAs($user)->delete("/categorias/{$category->id}")->assertRedirect('/categorias');
-
-        $this->assertModelMissing($category);
-    }
-}
+    $this->assertModelMissing($category);
+});

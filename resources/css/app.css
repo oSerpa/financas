@@ -35,6 +35,11 @@
     --color-expense: #a2452e;
     --color-expense-soft: #f2dfd6;
     --color-highlight: #e9c46a;
+
+    /* Cores dos gráficos: validadas para daltonismo (protan/deutan), por isso
+       um verde mais claro e um terracota mais escuro que os do texto. */
+    --color-chart-income: #3a8f5c;
+    --color-chart-expense: #9c3b25;
 }
 
 @layer base {
