@@ -2,14 +2,14 @@
 
 Controle financeiro pessoal feito com Laravel e MySQL, como projeto de portfólio. O usuário registra entradas e saídas, organiza por categoria e acompanha o saldo do mês.
 
-> Em desenvolvimento. Já dá para criar conta, registrar entradas e saídas, organizar categorias e ver o resumo do mês. Gráficos, filtros e exportação vêm na próxima etapa.
+> Em desenvolvimento. Já tem cadastro, lançamentos, categorias, painel com gráficos, filtros por mês e exportação em CSV. Falta o acabamento para portfólio (dados de exemplo, prints e CI).
 
 ## Tecnologias
 
 - PHP 8.3 e Laravel 13
 - MySQL
 - Blade e Tailwind CSS 4, compilados com Vite
-- PHPUnit para os testes
+- Pest para os testes
 
 ## Como rodar localmente
 

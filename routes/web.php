@@ -21,6 +21,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/painel', DashboardController::class)->name('dashboard');
     Route::post('/sair', [LoginController::class, 'destroy'])->name('logout');
 
+    Route::get('/lancamentos/exportar', [TransactionController::class, 'export'])->name('transactions.export');
+
     // URLs em português, nomes de rota em inglês para manter o código consistente.
     Route::resource('lancamentos', TransactionController::class)
         ->except('show')

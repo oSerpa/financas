@@ -1,80 +1,63 @@
 <?php
 
-namespace Tests\Feature;
-
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
-class AuthTest extends TestCase
-{
-    use RefreshDatabase;
+test('visitante é redirecionado para o login', function () {
+    $this->get('/painel')->assertRedirect('/entrar');
+});
 
-    public function test_visitante_e_redirecionado_para_o_login(): void
-    {
-        $this->get('/painel')->assertRedirect('/entrar');
-    }
+test('telas de login e cadastro abrem', function () {
+    $this->get('/entrar')->assertOk()->assertSee('Bom te ver de novo.');
+    $this->get('/cadastro')->assertOk()->assertSee('Abra sua caderneta.');
+});
 
-    public function test_telas_de_login_e_cadastro_abrem(): void
-    {
-        $this->get('/entrar')->assertOk()->assertSee('Bom te ver de novo.');
-        $this->get('/cadastro')->assertOk()->assertSee('Abra sua caderneta.');
-    }
+test('usuário consegue se cadastrar e ganha categorias padrão', function () {
+    $this->post('/cadastro', [
+        'name' => 'Maria Silva',
+        'email' => 'maria@example.com',
+        'password' => 'senha-segura',
+        'password_confirmation' => 'senha-segura',
+    ])->assertRedirect('/painel');
 
-    public function test_usuario_consegue_se_cadastrar(): void
-    {
-        $response = $this->post('/cadastro', [
-            'name' => 'Maria Silva',
-            'email' => 'maria@example.com',
-            'password' => 'senha-segura',
-            'password_confirmation' => 'senha-segura',
-        ]);
+    $this->assertAuthenticated();
+    expect(User::firstWhere('email', 'maria@example.com')->categories()->count())->toBe(9);
+});
 
-        $response->assertRedirect('/painel');
-        $this->assertAuthenticated();
-        $this->assertDatabaseHas('users', ['email' => 'maria@example.com']);
-    }
+test('cadastro rejeita e-mail repetido', function () {
+    User::factory()->create(['email' => 'maria@example.com']);
 
-    public function test_cadastro_rejeita_email_repetido(): void
-    {
-        User::factory()->create(['email' => 'maria@example.com']);
+    $this->post('/cadastro', [
+        'name' => 'Outra Maria',
+        'email' => 'maria@example.com',
+        'password' => 'senha-segura',
+        'password_confirmation' => 'senha-segura',
+    ])->assertSessionHasErrors('email');
 
-        $this->post('/cadastro', [
-            'name' => 'Outra Maria',
-            'email' => 'maria@example.com',
-            'password' => 'senha-segura',
-            'password_confirmation' => 'senha-segura',
-        ])->assertSessionHasErrors('email');
+    $this->assertGuest();
+});
 
-        $this->assertGuest();
-    }
+test('usuário consegue entrar e ver o painel', function () {
+    $user = User::factory()->create(['name' => 'Maria Silva']);
 
-    public function test_usuario_consegue_entrar_e_ver_o_painel(): void
-    {
-        $user = User::factory()->create(['name' => 'Maria Silva']);
+    $this->post('/entrar', ['email' => $user->email, 'password' => 'password'])
+        ->assertRedirect('/painel');
 
-        $this->post('/entrar', ['email' => $user->email, 'password' => 'password'])
-            ->assertRedirect('/painel');
+    $this->get('/painel')->assertOk()->assertSee('Olá, Maria.');
+});
 
-        $this->get('/painel')->assertOk()->assertSee('Olá, Maria.');
-    }
+test('senha errada não autentica', function () {
+    $user = User::factory()->create();
 
-    public function test_senha_errada_nao_autentica(): void
-    {
-        $user = User::factory()->create();
+    $this->post('/entrar', ['email' => $user->email, 'password' => 'errada'])
+        ->assertSessionHasErrors(['email' => 'E-mail ou senha incorretos.']);
 
-        $this->post('/entrar', ['email' => $user->email, 'password' => 'errada'])
-            ->assertSessionHasErrors(['email' => 'E-mail ou senha incorretos.']);
+    $this->assertGuest();
+});
 
-        $this->assertGuest();
-    }
+test('usuário consegue sair', function () {
+    $this->actingAs(User::factory()->create())
+        ->post('/sair')
+        ->assertRedirect('/entrar');
 
-    public function test_usuario_consegue_sair(): void
-    {
-        $this->actingAs(User::factory()->create())
-            ->post('/sair')
-            ->assertRedirect('/entrar');
-
-        $this->assertGuest();
-    }
-}
+    $this->assertGuest();
+});
